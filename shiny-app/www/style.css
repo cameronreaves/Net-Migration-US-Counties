@@ -1,0 +1,14 @@
+  body{
+    margin-bottom:20px;
+  }
+  
+  .container, 
+  .navbar-inner {
+    background-color: #fdd870 !important;
+  } 
+  
+  .navbar-static-top {
+    position: static;
+    margin-bottom: 0px;
+    background-color: #fdd870 !important;
+  }
