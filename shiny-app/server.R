@@ -1,11 +1,11 @@
 library(shiny)
-source("../helper/helper.R", local = TRUE)
+source("helper/helper.R", local = TRUE)
 
 ###functions from helper.R
 include = get_include()
-opp_atlas = readRDS("../clean-data/opp.Rda")
-climate = readRDS("../clean-data/climate.Rda")
-zillow = readRDS("../clean-data/zillow.Rda")
+opp_atlas = readRDS("clean-data/opp.Rda")
+climate = readRDS("clean-data/climate.Rda")
+zillow = readRDS("clean-data/zillow.Rda")
 counties_sf = read_counties()
 climate_sf = join_climate(climate, counties_sf)
 climate_top = get_top()

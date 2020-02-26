@@ -1,6 +1,6 @@
 library(shiny)
 library(gt)
-source("../helper/helper.R", local = TRUE)
+source("helper/helper.R", local = TRUE)
 #from helper
 include = get_include()
 
@@ -13,10 +13,10 @@ shinyUI(
                             fluidPage( 
                                       fluidRow(
                                         column(6,
-                                                 htmlTemplate("../html/geo_1.html")
+                                                 htmlTemplate("html/geo_1.html")
                                         ), 
                                         column(6,
-                                               htmlTemplate("../html/geo_2.html")
+                                               htmlTemplate("html/geo_2.html")
                                         )
                                       ),
                               fluidRow(
@@ -45,10 +45,10 @@ shinyUI(
                             fluidPage(
                      fluidRow(
                        column(6,
-                              htmlTemplate("../html/charts_1.html")
+                              htmlTemplate("html/charts_1.html")
                             ), 
                        column(6, 
-                              htmlTemplate("../html/charts_2.html")
+                              htmlTemplate("html/charts_2.html")
                               )
                      ),
                      fluidRow(column(6, 
@@ -71,7 +71,7 @@ shinyUI(
                             fluidRow(
                               column(2),
                               column(8,
-                            htmlTemplate("../html/about.html")
+                            htmlTemplate("html/about.html")
                               )
                               )
                             ), 

@@ -1,0 +1,12 @@
+name: shiny-app
+title: shiny-app
+username:
+account: cameronreaves
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1864501
+bundleId: 2830155
+url: https://cameronreaves.shinyapps.io/shiny-app/
+when: 1582683426.4983
+asMultiple: FALSE
+asStatic: FALSE
