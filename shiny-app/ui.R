@@ -14,7 +14,7 @@ shinyUI(
                               fluidRow(
                                 column(6,
                                        htmlTemplate("html/geo_1.html"), 
-                                       htmlTemplate("html/geo_1.html"), 
+                                       htmlTemplate("html/geo_2.html"), 
                                        htmlTemplate("html/geo_1.html")), 
                                 column(6, img(src = 'gmsl.gif', height = '500px', width = '500px'))
                               )
@@ -54,26 +54,31 @@ shinyUI(
                             ),
                    tabPanel("Charts",
                             tags$div(
-                              titlePanel("Upward Mobility and Housing Prices in Net Positive Counties"),
+                              titlePanel("Relationships between Population and Income"),
                                style="text-align:center;"),
                             fluidPage(
                      fluidRow(
                        column(6,
-                              htmlTemplate("html/charts_1.html")
+                              htmlTemplate("html/charts_1.html"), 
+                              radioButtons("adjust", label = NULL,
+                                           c("Non-Adjusted" = "non",
+                                             "Adjusted" = "adj"), 
+                                           inline = TRUE)
                             ), 
                        column(6, 
                               htmlTemplate("html/charts_2.html")
                               )
                      ),
                      fluidRow(column(6, 
-                                     plotOutput("bar")
+                                     tabsetPanel(type = "tabs",
+                                                 tabPanel("Population", plotOutput("pop")),
+                                                 tabPanel("Table", tableOutput("pop_table")) 
+                                            )
                                      ),
                               column(6,
                                tabsetPanel(type = "tabs",
-                                           tabPanel("All Counties", plotOutput("Agg")),
-                                           tabPanel("By Quartile", plotOutput("Quart")), 
-                                           tabPanel("Best Counties", tableOutput("Best"))
-                              )
+                                           tabPanel("Population", plotOutput("Agg")),
+                                           tabPanel("Median Income", plotOutput("Quart"))                              )
                             )
                         )
                      ) 

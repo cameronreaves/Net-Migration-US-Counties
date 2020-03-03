@@ -3,12 +3,10 @@ source("helper/helper.R", local = TRUE)
 
 ###functions from helper.R
 include = get_include()
-opp_atlas = readRDS("clean-data/opp.Rda")
 climate = readRDS("clean-data/climate.Rda")
-zillow = readRDS("clean-data/zillow.Rda")
+stats = readRDS("clean-data/stats.Rds")
 counties_sf = read_counties()
 climate_sf = join_climate(climate, counties_sf)
-climate_top = get_top()
 climate_top_m = merge_climate()
 
 
@@ -33,37 +31,14 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  #This is so cool but too complicated
-  # observe({
-  #   x <- input$select
-  # 
-  #   # Can use character(0) to remove all choices
-  #   if (is.null(x)){
-  #     x <- character(0)
-  #   }
-  #   
-  #   c = climate_sf %>% 
-  #     filter(state_name == x & net < 0) %>% 
-  #     pull(county_name) 
-  #   
-  #   # Can also set the label and select items
-  #   updateSelectInput(session, "inSelect",
-  #                     choices = c,
-  #                     selected = "California"
-  #   )
-  # })
-  # 
-  # coun <- reactive({
-  #   distance %>% 
-  #     filter(countyname1 == input$inSelect)
-  # })
-  # 
-  # 
-  # output$dis = renderTable({
-  #   coun()
-  # })
+  button <- reactive({
+    dist <- switch(input$adjust,
+                   non = FALSE,
+                   adj = TRUE)
+    dist
+  })
 
-    output$state <- renderPlot({
+ output$state <- renderPlot({
         stateInput() %>% 
             ggplot(aes()) +
             geom_sf(aes(fill = cb_net)) +
@@ -144,7 +119,8 @@ shinyServer(function(input, output, session) {
     
   output$bar <- renderPlot({
     
-    climate_top %>% 
+    stats %>%
+      head(5) %>% 
       ggplot(aes(reorder(name, net),net, fill = (net > 0)))+
       geom_bar(stat="identity") +
       coord_flip() +
@@ -167,60 +143,118 @@ shinyServer(function(input, output, session) {
       ) 
   })  
     
+  output$pop <- renderPlot({
     
+    if(button()){
+      stats %>%
+        mutate(normal = net / population * 10000) %>% 
+        arrange(normal) %>% 
+        FSA::headtail(10) %>% 
+        ggplot(aes(reorder(name, normal),normal, fill = (net > 0)))+
+        geom_bar(stat="identity") +
+        coord_flip() +
+        scale_fill_manual(labels = c("Negative", "Positve"),values = c("#fdbf11", "#0a4c6a")) +
+        labs(
+          title = "Top + / -  Migration by County", 
+          subtitle = "", 
+          fill = "Net Migration"
+        ) + 
+        theme(
+          panel.background = element_blank(),
+          panel.grid = element_blank(),
+          axis.ticks = element_blank(),
+          text = element_text(family = "Lato"),
+          legend.text = element_text(size = 10),
+          panel.border = element_blank())
+    }
+    else{
+      stats %>%
+        arrange(net) %>% 
+        FSA::headtail(10) %>% 
+        ggplot(aes(reorder(name, net),net, fill = (net > 0)))+
+        geom_bar(stat="identity") +
+        coord_flip() +
+        scale_fill_manual(labels = c("Negative", "Positve"),values = c("#fdbf11", "#0a4c6a")) +
+        labs(
+          title = "Top + / -  Migration by County", 
+          subtitle = "", 
+          fill = "Net Migration"
+        ) + 
+        theme(
+          panel.background = element_blank(),
+          panel.grid = element_blank(),
+          axis.ticks = element_blank(),
+          text = element_text(family = "Lato"),
+          legend.text = element_text(size = 10),
+          panel.border = element_blank())
+    }
+  })  
   output$Agg <- renderPlot({
     
-    climate_top_m %>% 
-      ggplot(aes(log10(zillow), h_income))+
+    stats %>% 
+      ggplot(aes(log10(population), cb_net))+
+      geom_jitter(color = "#73bfe2", size = .5, alpha = .5) +
+      theme(
+        panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        text = element_text(family = "Lato")
+      ) +
+      geom_smooth(method='lm', se = FALSE) +
+      labs(
+        title = "Net Migration vs Population", 
+        subtitle = "", 
+        x = "Population log base 10", 
+        y = "Cubed Root Net Migration"
+      )
+  })
+  
+  output$Quart <- renderPlot({
+    stats %>% 
+      ggplot(aes(income, cb_net))+
       geom_point(color = "#73bfe2", size = .5) +
       theme(
         panel.background = element_blank(),
         axis.ticks = element_blank(),
         text = element_text(family = "Lato")
       ) +
-      scale_x_reverse() +
       geom_smooth(method='lm', se = FALSE) +
       labs(
-        title = "ZHVI vs Upward Mobility", 
-        subtitle = "Aggregate", 
-        x = "ZHVI", 
-        y = "Household Income for Children Parents in 25th Percentile"
-      )
-  })
-  
-  output$Quart <- renderPlot({
-    climate_top_m %>% 
-      ggplot(aes(log10(zillow), h_income, color = as.factor(PCT)))+
-      geom_point(size = .5) +
-      scale_color_manual(values = c("#fdbf11", "#ec008b", "#000000", "#55b748")) +
-      theme(
-        panel.background = element_blank(),
-        axis.ticks = element_blank(),
-        text = element_text(family = "Lato")
-      ) +
-      scale_x_reverse() +
-      geom_smooth(method='lm', se = FALSE) +
-      labs(
-        title = "ZHVI vs Household Income 25 percentile", 
-        subtitle = "Quartiles", 
-        color = "Quartiles", 
-        x = "ZHVI", 
-        y = "Household Income for Children Parents in 25th Percentile"
+        title = "Net Migration vs Population", 
+        subtitle = "", 
+        x = "Population log base 10", 
+        y = "Cubed Root Net Migration"
       )
   })
   
   
-  output$Best <- render_gt({
-    climate_top_m %>% 
-      arrange(ratio) %>% 
-      head(n = 10) %>%
-      select(Name, h_income, zillow, ratio) %>% 
-      gt() %>% 
-      cols_label(
-        Name = "County",
-        h_income = "Household Income (Upward Mobility)",
-        zillow = "Housing Price (ZHVI)",
-        ratio = "Ratio (ZHVI / Income)")
+  output$pop_table <- render_gt({
+    if(button()){
+      stats %>% 
+        mutate(normal = net / population * 10000) %>% 
+        arrange(normal) %>% 
+        FSA::headtail(n = 10) %>%
+        gt() %>% 
+        cols_label(
+          name = "County",
+          income = "Median Income",
+          net = "Net Migration",
+          cb_net = "Cubed",
+          normal = "Net / Population ",
+          population = "Population")
+    }else{
+      stats %>% 
+        mutate(normal = net / population * 10000) %>% 
+        arrange(net) %>% 
+        FSA::headtail(n = 10) %>%
+        gt() %>% 
+        cols_label(
+          name = "County",
+          income = "Median Income",
+          net = "Net Migration",
+          cb_net = "Cubed",
+          normal = "Net / Population ",
+          population = "Population")
+    }
   })
     
   

@@ -54,30 +54,6 @@ read_counties = function(){
   
 }
 
-#returns cleaned dataframe with Zillow index only for most recent month of US counties
-
-read_zillow <- function() {
-  
-  zillow = read_csv("raw-data/zillow.csv")
-
-  zillow %>% 
-    rename(zillow = `2019-12`, county = RegionName, state = State, size_rank = SizeRank) %>% 
-    unite("fips" ,StateCodeFIPS:MunicipalCodeFIPS,sep="") %>% 
-    select(county, state, zillow, fips) 
-
-}
-
-#returns cleaned dataframe of household income for 25 percentile of US counties
-
-read_opp = function(){
-  
-  opp_atlas = read_csv("raw-data/opp_atlas.csv")
-  
-  opp_atlas %>% 
-    mutate(cty = str_remove(cty, "cty")) %>% 
-    rename("h_income" = Household_Income_rP_gP_p25)
-}
-
 #returns cleaned dataframe of net migratoin for US counties merged with county fips from scraped from the web
 
 read_climate = function() {
@@ -101,12 +77,15 @@ read_climate = function() {
   
 }
 
-get_top = function(){
-  
-  climate_top = climate %>% 
-    filter(mig_rank < 16 | mig_rank > 1735) %>% 
-    unite(col="name", county:state, sep = ",") %>% 
-    mutate(name = as.factor(name))
+#merge income and population and climate data sets together, then clean them
+
+make_stats = function(){
+    stats = climate %>% 
+    inner_join(income, by = c("f" = "GEOID")) %>% 
+    select("name" = NAME, net, cb_net, f, "income" = estimate) %>% 
+    inner_join(population, by = c("f" = "GEOID")) %>% 
+    rename("population" = estimate) %>% 
+    select(name, net, cb_net,income, population)
 }
 
 merge_climate = function(){
@@ -140,4 +119,5 @@ if (FALSE) {
   save_as_dataframe(read_climate(), "clean-data/climate")
   save_as_dataframe(read_zillow(), "clean-data/zillow")
   save_as_dataframe(read_opp(), "clean-data/opp")
+  saveRDS(stats, "clean-data/stats.Rds")
 }
