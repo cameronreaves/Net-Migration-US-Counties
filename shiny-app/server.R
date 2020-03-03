@@ -62,8 +62,6 @@ shinyServer(function(input, output, session) {
   # output$dis = renderTable({
   #   coun()
   # })
-  
-  
 
     output$state <- renderPlot({
         stateInput() %>% 

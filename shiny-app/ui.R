@@ -6,6 +6,20 @@ include = get_include()
 
 shinyUI(
     navbarPage("Sea Level Rise",
+                   tabPanel("Global Sea Level",
+                          tags$div(
+                             titlePanel("Global Sea Level Rise"), 
+                            style="text-align:center;"),
+                            fluidPage(
+                              fluidRow(
+                                column(6,
+                                       htmlTemplate("html/geo_1.html"), 
+                                       htmlTemplate("html/geo_1.html"), 
+                                       htmlTemplate("html/geo_1.html")), 
+                                column(6, img(src = 'gmsl.gif', height = '500px', width = '500px'))
+                              )
+                            )
+                            ),
                    tabPanel("Geo-Spatial",
                             tags$div(
                             titlePanel("Net Migration resulting from Sea Level Rise in US. Counties by 2100")
