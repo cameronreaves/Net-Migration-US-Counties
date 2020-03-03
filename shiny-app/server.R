@@ -7,8 +7,6 @@ climate = readRDS("clean-data/climate.Rda")
 stats = readRDS("clean-data/stats.Rds")
 counties_sf = read_counties()
 climate_sf = join_climate(climate, counties_sf)
-climate_top_m = merge_climate()
-
 
 shinyServer(function(input, output, session) {
 
@@ -219,9 +217,9 @@ shinyServer(function(input, output, session) {
       ) +
       geom_smooth(method='lm', se = FALSE) +
       labs(
-        title = "Net Migration vs Population", 
+        title = "Net Migration vs Income", 
         subtitle = "", 
-        x = "Population log base 10", 
+        x = "Median Income", 
         y = "Cubed Root Net Migration"
       )
   })

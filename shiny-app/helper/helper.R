@@ -88,16 +88,6 @@ make_stats = function(){
     select(name, net, cb_net,income, population)
 }
 
-merge_climate = function(){
-  
-  climate_merge = full_join(zillow, opp_atlas, by = c("fips" = "cty")) %>% 
-    semi_join(climate %>% filter(net > 0), by = c("fips" = "f"))
-  
-  
-  climate_merge %>% 
-    mutate(PCT = ntile(h_income, 4), ratio = zillow / h_income)
-}
-
 #returns sf dataframe that joins climate dataframe with counties sf dataframe
 
 join_climate = function(climate, counties){
