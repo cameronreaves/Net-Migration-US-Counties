@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
         axis.ticks = element_blank(),
         text = element_text(family = "Lato")
       ) +
-      geom_smooth(method='lm', se = FALSE) +
+      geom_smooth(method='lm', se = FALSE, col = "black") +
       labs(
         title = "Net Migration vs Population", 
         subtitle = "", 
@@ -215,7 +215,7 @@ shinyServer(function(input, output, session) {
         axis.ticks = element_blank(),
         text = element_text(family = "Lato")
       ) +
-      geom_smooth(method='lm', se = FALSE) +
+      geom_smooth(method='lm', se = FALSE, col = "black") +
       labs(
         title = "Net Migration vs Income", 
         subtitle = "", 
@@ -230,28 +230,24 @@ shinyServer(function(input, output, session) {
       stats %>% 
         mutate(normal = net / population * 10000) %>% 
         arrange(normal) %>% 
+        select(-cb_net,-income,-population) %>% 
         FSA::headtail(n = 10) %>%
         gt() %>% 
         cols_label(
           name = "County",
-          income = "Median Income",
           net = "Net Migration",
-          cb_net = "Cubed",
-          normal = "Net / Population ",
-          population = "Population")
+          normal = "Net / Population ")
     }else{
       stats %>% 
         mutate(normal = net / population * 10000) %>% 
         arrange(net) %>% 
+        select(-cb_net,-income,-population) %>% 
         FSA::headtail(n = 10) %>%
         gt() %>% 
         cols_label(
           name = "County",
-          income = "Median Income",
           net = "Net Migration",
-          cb_net = "Cubed",
-          normal = "Net / Population ",
-          population = "Population")
+          normal = "Net / Population ")
     }
   })
     

@@ -13,9 +13,8 @@ shinyUI(
                             fluidPage(
                               fluidRow(
                                 column(6,
-                                       htmlTemplate("html/geo_1.html"), 
-                                       htmlTemplate("html/geo_2.html"), 
-                                       htmlTemplate("html/geo_1.html")), 
+                                       htmlTemplate("html/index_1.html"), 
+                                       htmlTemplate("html/index_2.html")), 
                                 column(6, img(src = 'gmsl.gif', height = '500px', width = '500px'))
                               )
                             )
@@ -52,7 +51,7 @@ shinyUI(
                               )
                             )
                             ),
-                   tabPanel("Charts",
+                   tabPanel("Adjusted / Regressions",
                             tags$div(
                               titlePanel("Relationships between Population and Income"),
                                style="text-align:center;"),
