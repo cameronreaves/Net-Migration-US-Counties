@@ -155,6 +155,8 @@ shinyServer(function(input, output, session) {
         labs(
           title = "Top + / -  Migration by County", 
           subtitle = "", 
+          y = "Net Migration", 
+          x = "County",
           fill = "Net Migration"
         ) + 
         theme(
@@ -175,7 +177,9 @@ shinyServer(function(input, output, session) {
         scale_fill_manual(labels = c("Negative", "Positve"),values = c("#fdbf11", "#0a4c6a")) +
         labs(
           title = "Top + / -  Migration by County", 
-          subtitle = "", 
+          subtitle = "",        
+          y = "Net Migration", 
+          x = "County", 
           fill = "Net Migration"
         ) + 
         theme(
