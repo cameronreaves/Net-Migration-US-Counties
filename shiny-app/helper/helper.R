@@ -61,6 +61,9 @@ read_climate = function() {
   climate = read_csv("raw-data/climate.csv")
   web_fips = read_csv("raw-data/web_fips.csv")
   
+  climate <- climate %>% 
+    mutate(County = replace(County, County=="Miami-Dade", "Dade"))
+  
   states <- c(climate$State)
   climate$State = state.abb[match(states,state.name)] 
   
@@ -91,6 +94,9 @@ make_stats = function(){
 #returns sf dataframe that joins climate dataframe with counties sf dataframe
 
 join_climate = function(climate, counties){
+  
+  climate <- climate %>% 
+    mutate( f = replace(f, f == 12025, 12086))
   
   climate_sf = counties %>% 
     left_join(climate, by = c("county_fips" = "f")) %>% 

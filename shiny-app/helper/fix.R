@@ -17,3 +17,30 @@ climate = climate %>%
 
 climate = data.frame(climate)
 
+counties_sf = read_counties()
+
+ch <- counties_sf %>% 
+  filter(state_name == "Florida")
+
+climate_sf = counties %>% 
+  left_join(climate, by = c("county_fips" = "f"))
+
+
+counties %>% 
+  filter()
+
+# in counties_sf which is from urbanmapr , miami dade fips == 	12086
+
+%>% 
+  select(-fips_class, -state_abbv, -state_fips, -county, -state, -mig_rank)
+
+return(climate_sf)
+
+cle = readRDS("clean-data/climate.Rda")
+
+cle %>% 
+  filter(county =="Dade")
+
+
+climate_sf %>% 
+  filter(county_fips == 12025 )
