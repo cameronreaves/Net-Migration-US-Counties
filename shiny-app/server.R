@@ -193,6 +193,13 @@ shinyServer(function(input, output, session) {
   })  
   output$Agg <- renderPlot({
     
+    # calculates correlation
+    
+     pop_log <- log10(stats$population)
+     cb <- stats$cb_net
+     
+     c <- round(cor(pop_log, cb), 3)
+    
     stats %>% 
       ggplot(aes(log10(population), cb_net))+
       geom_jitter(color = "#73bfe2", size = .5, alpha = .5) +
@@ -207,10 +214,20 @@ shinyServer(function(input, output, session) {
         subtitle = "", 
         x = "Population log base 10", 
         y = "Cubed Root Net Migration"
-      )
+      ) +
+      annotate("text", x = 3, y = 10, label = paste("r = ", c))
   })
   
   output$Quart <- renderPlot({
+    
+    
+    # calculates correlation
+    
+    inc <- stats$income
+    cb <- stats$cb_net
+    
+    c <- round(cor(inc, cb), 3)
+    
     stats %>% 
       ggplot(aes(income, cb_net))+
       geom_point(color = "#73bfe2", size = .5) +
@@ -225,7 +242,8 @@ shinyServer(function(input, output, session) {
         subtitle = "", 
         x = "Median Income", 
         y = "Cubed Root Net Migration"
-      )
+      ) +
+      annotate("text", x = 3, y = 10, label = paste("r = ", c))
   })
   
   

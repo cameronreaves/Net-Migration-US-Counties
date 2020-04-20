@@ -5,7 +5,7 @@ library(urbnthemes)
 library(openintro) # state abbr
 library(gt)
 library(stringr)
-
+library(corrr)
 
 #subset of counties that include only states along the coast of the United States
 
@@ -54,7 +54,7 @@ read_counties = function(){
   
 }
 
-#returns cleaned dataframe of net migratoin for US counties merged with county fips from scraped from the web
+#returns cleaned dataframe of net migration for US counties merged with county fips from scraped from the web
 
 read_climate = function() {
   
